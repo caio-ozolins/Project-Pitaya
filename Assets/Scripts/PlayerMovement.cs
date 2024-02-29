@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -8,6 +9,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private int movementSpeed;
     [SerializeField] private int jumpForce;
     [SerializeField] private LayerMask groundLayer;
+    
+    //number of jumps - 1
+    private int numberJumps;
+
     private void Awake()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -22,14 +27,24 @@ public class PlayerMovement : MonoBehaviour
         _rigidbody2D.velocity = new Vector2(horizontalInput * movementSpeed, _rigidbody2D.velocity.y);
 
         //player jump
-        if (IsGrounded())
+        if (numberJumps > 0)
         {
             if (Input.GetButtonDown("Jump"))
             {
                 _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, jumpForce);
-            }
-                
+                numberJumps -= 1;
+            }   
         }
+        
+        if (IsGrounded())
+        {
+            numberJumps = 1;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+
     }
 
     private bool IsGrounded()
